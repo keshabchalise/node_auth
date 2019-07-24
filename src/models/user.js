@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const userSchema = new mongoose.Schema({
     name:{type:String,required:true},
@@ -14,9 +15,8 @@ userSchema.pre('save',function(next){
     //only hash password if it is modified or new
     if(!user.isModified('password')) return next();
 
-    const saltRounds = 10;
     //generate salt for hashing
-    bcrypt.genSalt(saltRounds,function(err,salt){
+    bcrypt.genSalt(10,function(err,salt){
         if(err) return next(err);
 
         //hash password using salt
@@ -28,10 +28,9 @@ userSchema.pre('save',function(next){
     });
 });
 
-userSchema.methods.generateAuthToken = async function(){
+userSchema.methods.generateAuthToken = function(){
     const user = this;
-    const jwtKey = 'jsonwebtokenkey';
-    const token = jwt.sign({_id:user._id},jwtKey);
+    const token = jwt.sign({_id:user._id},process.env.JWT_KEY);
     return token;
 }
 

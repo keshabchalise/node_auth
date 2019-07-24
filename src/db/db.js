@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const mongodbUrl = "mongodb+srv://keshab40:keshab40@cluster0-kxx1k.mongodb.net/test?retryWrites=true&w=majority";
+const mongodbURL = process.env.MONGODB_CONNECTION_URL;
 const options = {
     useNewUrlParser:true,
     useCreateIndex:true
 };
-mongoose.connect(mongodbUrl,options)
+mongoose.connect(mongodbURL,options)
     .then(()=> console.log('DB is ready'))
     .catch(err=> console.log('DB is not ready, check connection',err.message));
